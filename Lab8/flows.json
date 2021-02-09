@@ -1,0 +1,444 @@
+[
+    {
+        "id": "126ff0db.636fcf",
+        "type": "tab",
+        "label": "Tri-Color LED",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "96459ceb.d9f7d",
+        "type": "comment",
+        "z": "126ff0db.636fcf",
+        "name": "Tri-Color LED (RGB) w/ PBS and Potentiometer by Rutvik Patel (pate0635@algonquinlive.com)",
+        "info": "Student Name: Rutvik Patel\nStudent number: 040915445\nEmail: pate0635@algonquinlive.com\n",
+        "x": 400,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "b0eeccd4.177da",
+        "type": "arduino in",
+        "z": "126ff0db.636fcf",
+        "name": "Pushbutton (pin: 3)",
+        "pin": "3",
+        "state": "INPUT",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 130,
+        "y": 240,
+        "wires": [
+            [
+                "aa109e57.d6ceb"
+            ]
+        ]
+    },
+    {
+        "id": "40217b2c.8b0d94",
+        "type": "arduino out",
+        "z": "126ff0db.636fcf",
+        "name": "RED (Pin:23)",
+        "pin": "23",
+        "state": "PWM",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 1030,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "644d3ce3.3d9df4",
+        "type": "arduino out",
+        "z": "126ff0db.636fcf",
+        "name": "Green (Pin: 20)",
+        "pin": "20",
+        "state": "PWM",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 1040,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "dad269fd.a1a5c8",
+        "type": "arduino out",
+        "z": "126ff0db.636fcf",
+        "name": "Blue (Pin 21)",
+        "pin": "21",
+        "state": "PWM",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 1030,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "ee37ba70.57a808",
+        "type": "arduino in",
+        "z": "126ff0db.636fcf",
+        "name": "Trim Pot (A8)",
+        "pin": "8",
+        "state": "ANALOG",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 150,
+        "y": 640,
+        "wires": [
+            [
+                "37d5acc7.a35504"
+            ]
+        ]
+    },
+    {
+        "id": "707e818f.fde2f",
+        "type": "function",
+        "z": "126ff0db.636fcf",
+        "name": "Cycle Button Click",
+        "func": "var clickCount = flow.get(\"rgbState\");\n\nif(clickCount == undefined) {\n    clickCount = 0; \n}\nelse{\n    clickCount +=1; \n}\n\nif (clickCount === 4){\n    clickCount = 1;\n}\n\nflow.set(\"rgbState\",clickCount);\nmsg.payload = clickCount;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 230,
+        "y": 360,
+        "wires": [
+            [
+                "31f129a5.3d5f26",
+                "d570827.2be1e8"
+            ]
+        ]
+    },
+    {
+        "id": "31f129a5.3d5f26",
+        "type": "switch",
+        "z": "126ff0db.636fcf",
+        "name": "",
+        "property": "rgbState",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "3",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 470,
+        "y": 360,
+        "wires": [
+            [
+                "b18db5.615d4248",
+                "a4d1783b.9cab28",
+                "51ccb69.4877b48"
+            ],
+            [
+                "617a4609.250348",
+                "a4d1783b.9cab28",
+                "51ccb69.4877b48"
+            ],
+            [
+                "b18db5.615d4248",
+                "68f9aabb.2e3184",
+                "51ccb69.4877b48"
+            ],
+            [
+                "b18db5.615d4248",
+                "a4d1783b.9cab28",
+                "7376343a.f0953c"
+            ]
+        ]
+    },
+    {
+        "id": "617a4609.250348",
+        "type": "function",
+        "z": "126ff0db.636fcf",
+        "name": "Dim",
+        "func": "var dimmer = flow.get(\"dimmer\")||0;\n\nvar pinValue = Number(100 * dimmer / 100).toFixed();\n\nflow.set(\"dimValue\", pinValue);\n\n\nmsg.payload = pinValue;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 750,
+        "y": 220,
+        "wires": [
+            [
+                "6a3d4579.142e4c",
+                "40217b2c.8b0d94"
+            ]
+        ]
+    },
+    {
+        "id": "68f9aabb.2e3184",
+        "type": "function",
+        "z": "126ff0db.636fcf",
+        "name": "Dim",
+        "func": "var dimmer = flow.get(\"dimmer\")||0;\n\nvar pinValue = Number(100 * dimmer / 100).toFixed();\n\nflow.set(\"dimValue\", pinValue);\n\nmsg.payload = pinValue;\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 750,
+        "y": 340,
+        "wires": [
+            [
+                "8db2c3fc.d5c98",
+                "644d3ce3.3d9df4"
+            ]
+        ]
+    },
+    {
+        "id": "7376343a.f0953c",
+        "type": "function",
+        "z": "126ff0db.636fcf",
+        "name": "Dim",
+        "func": "var dimmer = flow.get(\"dimmer\")||0;\n\nvar pinValue = Number(100 * dimmer / 100).toFixed();\n\nflow.set(\"dimValue\", pinValue);\n\n\nmsg.payload = pinValue;\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 750,
+        "y": 480,
+        "wires": [
+            [
+                "4ad7561c.80bdd8",
+                "dad269fd.a1a5c8"
+            ]
+        ]
+    },
+    {
+        "id": "d40a9770.dd04c8",
+        "type": "function",
+        "z": "126ff0db.636fcf",
+        "name": "cache dimmer",
+        "func": "flow.set(\"dimmer\",msg.payload );\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 940,
+        "y": 640,
+        "wires": [
+            [
+                "31f129a5.3d5f26"
+            ]
+        ]
+    },
+    {
+        "id": "37d5acc7.a35504",
+        "type": "range",
+        "z": "126ff0db.636fcf",
+        "minin": "0",
+        "maxin": "1024",
+        "minout": "0",
+        "maxout": "100",
+        "action": "clamp",
+        "round": true,
+        "property": "payload",
+        "name": "",
+        "x": 340,
+        "y": 640,
+        "wires": [
+            [
+                "9f91cc52.4deda"
+            ]
+        ]
+    },
+    {
+        "id": "9f91cc52.4deda",
+        "type": "rbe",
+        "z": "126ff0db.636fcf",
+        "name": "rbe node: block unless value changes",
+        "func": "rbei",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "property": "payload",
+        "x": 610,
+        "y": 640,
+        "wires": [
+            [
+                "d40a9770.dd04c8"
+            ]
+        ]
+    },
+    {
+        "id": "6a3d4579.142e4c",
+        "type": "debug",
+        "z": "126ff0db.636fcf",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "8db2c3fc.d5c98",
+        "type": "debug",
+        "z": "126ff0db.636fcf",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "4ad7561c.80bdd8",
+        "type": "debug",
+        "z": "126ff0db.636fcf",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "d570827.2be1e8",
+        "type": "debug",
+        "z": "126ff0db.636fcf",
+        "name": "CLICK COUNT IS:",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "51ccb69.4877b48",
+        "type": "change",
+        "z": "126ff0db.636fcf",
+        "name": "Turn Off",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 520,
+        "wires": [
+            [
+                "dad269fd.a1a5c8"
+            ]
+        ]
+    },
+    {
+        "id": "a4d1783b.9cab28",
+        "type": "change",
+        "z": "126ff0db.636fcf",
+        "name": "Turn Off",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 380,
+        "wires": [
+            [
+                "644d3ce3.3d9df4"
+            ]
+        ]
+    },
+    {
+        "id": "b18db5.615d4248",
+        "type": "change",
+        "z": "126ff0db.636fcf",
+        "name": "Turn Off",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 760,
+        "y": 260,
+        "wires": [
+            [
+                "40217b2c.8b0d94"
+            ]
+        ]
+    },
+    {
+        "id": "aa109e57.d6ceb",
+        "type": "debounce",
+        "z": "126ff0db.636fcf",
+        "time": "500",
+        "name": "debounce 500mS",
+        "x": 370,
+        "y": 240,
+        "wires": [
+            [
+                "707e818f.fde2f"
+            ]
+        ]
+    },
+    {
+        "id": "b4543f4.a6ae6c",
+        "type": "arduino-board",
+        "device": "COM3"
+    }
+]

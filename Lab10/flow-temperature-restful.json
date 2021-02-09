@@ -1,0 +1,669 @@
+[
+    {
+        "id": "b5a32178.96e11",
+        "type": "tab",
+        "label": "Temperature RESTful API (localhost) with Swagger Intrective documentation",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "43c01e3d.2c4e7",
+        "type": "arduino in",
+        "z": "b5a32178.96e11",
+        "name": "Thermistor (A1)",
+        "pin": "1",
+        "state": "ANALOG",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 140,
+        "y": 260,
+        "wires": [
+            [
+                "fb257528.848868",
+                "73d5a975.809db8"
+            ]
+        ]
+    },
+    {
+        "id": "fb257528.848868",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "Conver Pin(A1) to Celsius",
+        "func": "var code = msg.payload;\nvar celsius;\n\n if (code <= 289) {\n    celsius = 5 + (code - 289) / 9.82;\n  }\n  if (code > 289 && code <= 342) {\n    celsius = 10 + (code - 342) / 10.60;\n  }\n  if (code > 342 && code <= 398) {\n    celsius = 15 + (code - 398) / 11.12;\n  }\n  if (code > 398 && code <= 455) {\n    celsius = 20 + (code - 455) / 11.36;\n  }\n  if (code > 455 && code <= 512) {\n    celsius = 25 + (code - 512) / 11.32;\n  }\n  if (code > 512 && code <= 566) {\n    celsius = 30 + (code - 566) / 11.00;\n  }\n  if (code > 566 && code <= 619) {\n    celsius = 35 + (code - 619) / 10.44;\n  }\n  if (code > 619 && code <= 667) {\n    celsius = 40 + (code - 667) / 9.73;\n  }\n  if (code > 667) {\n    celsius = 45 + (code - 712) / 8.90;\n  }\n  \nmsg.payload = celsius.toFixed(1);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 390,
+        "y": 260,
+        "wires": [
+            [
+                "5782c22f.068f0c"
+            ]
+        ]
+    },
+    {
+        "id": "5782c22f.068f0c",
+        "type": "rbe",
+        "z": "b5a32178.96e11",
+        "name": "block unless value change is greater than 0.2",
+        "func": "deadband",
+        "gap": "0.2",
+        "start": "",
+        "inout": "out",
+        "property": "payload",
+        "x": 730,
+        "y": 260,
+        "wires": [
+            [
+                "26137716.431928"
+            ]
+        ]
+    },
+    {
+        "id": "26137716.431928",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "cache temperature",
+        "func": "flow.set( 'TEMPERATURE', msg.payload );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1050,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "73d5a975.809db8",
+        "type": "debug",
+        "z": "b5a32178.96e11",
+        "name": "Debug: raw sensor reading",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "a4cc98a5.53caa8",
+        "type": "switch",
+        "z": "b5a32178.96e11",
+        "name": "switch on property: msg.req.query.scale",
+        "property": "req.query.scale",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "c",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "f",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "k",
+                "vt": "str"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 480,
+        "y": 640,
+        "wires": [
+            [
+                "9743900c.55979"
+            ],
+            [
+                "c15120c1.16471"
+            ],
+            [
+                "22a462ea.4b4dce"
+            ],
+            [
+                "e15d1ade.fdafa8"
+            ]
+        ]
+    },
+    {
+        "id": "9743900c.55979",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "Get chaced temperature",
+        "func": "// Get cached temperature\nvar temperatureNow = flow.get( 'TEMPERATURE' );\nmsg.payload = Number( temperatureNow );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 270,
+        "y": 840,
+        "wires": [
+            [
+                "705cb071.e3ef2"
+            ]
+        ]
+    },
+    {
+        "id": "c15120c1.16471",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "Get chaced temperature",
+        "func": "// Get cached temperature\nvar temperatureNow = flow.get( 'TEMPERATURE' );\nmsg.payload = Number( temperatureNow );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 270,
+        "y": 920,
+        "wires": [
+            [
+                "580d021f.047aec"
+            ]
+        ]
+    },
+    {
+        "id": "22a462ea.4b4dce",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "Get chaced temperature",
+        "func": "// Get cached temperature\nvar temperatureNow = flow.get( 'TEMPERATURE' );\nmsg.payload = Number( temperatureNow );\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 270,
+        "y": 1000,
+        "wires": [
+            [
+                "a872e7c2.38f8e8"
+            ]
+        ]
+    },
+    {
+        "id": "705cb071.e3ef2",
+        "type": "template",
+        "z": "b5a32178.96e11",
+        "name": "to JSON",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n    \"temperature\": {{payload}}\n}",
+        "output": "json",
+        "x": 780,
+        "y": 840,
+        "wires": [
+            [
+                "6c486111.55a01"
+            ]
+        ]
+    },
+    {
+        "id": "580d021f.047aec",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "Convert Celsius to Fahrenheit",
+        "func": "let fahrenheit = msg.payload * 1.8 + 32;\nmsg.payload = fahrenheit.toFixed(1);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 550,
+        "y": 920,
+        "wires": [
+            [
+                "705cb071.e3ef2"
+            ]
+        ]
+    },
+    {
+        "id": "a872e7c2.38f8e8",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "Convert Celsius to Kelvin",
+        "func": "let kelvin = msg.payload + 273.15;\nmsg.payload= kelvin.toFixed(1);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 550,
+        "y": 1000,
+        "wires": [
+            [
+                "705cb071.e3ef2"
+            ]
+        ]
+    },
+    {
+        "id": "ac76737b.a041b",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "Temperature RESTful API (localhost) with Swagger Intrective documentation by Rutvik Patel (pate0635@algonquinlive.com)",
+        "info": "Name: Rutvik Patel\nStudent No.: 040915445",
+        "x": 470,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "e15d1ade.fdafa8",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "Get cached scale",
+        "func": "var scale = flow.get('scale') ;\n\nmsg.payload = scale;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 790,
+        "y": 660,
+        "wires": [
+            [
+                "bb9ece7a.acad4"
+            ]
+        ]
+    },
+    {
+        "id": "a4a41085.d9c3a",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "cycle PBS Click: 1,2,3...... ",
+        "func": "var clickCount = flow.get(\"pbsButton\");\n\nif(clickCount == undefined) {\n    clickCount = 0; \n}\nelse{\n    clickCount +=1; \n}\n\nif (clickCount === 4){\n    clickCount = 1;\n}\n\nflow.set(\"pbsButton\",clickCount);\n\nmsg.payload = clickCount;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 610,
+        "y": 460,
+        "wires": [
+            [
+                "cc74a193.6083a"
+            ]
+        ]
+    },
+    {
+        "id": "5214b8f7.bfe088",
+        "type": "debounce",
+        "z": "b5a32178.96e11",
+        "time": "500",
+        "name": "Debounce (500 mS)",
+        "x": 340,
+        "y": 460,
+        "wires": [
+            [
+                "a4a41085.d9c3a"
+            ]
+        ]
+    },
+    {
+        "id": "c79ab968.259e18",
+        "type": "arduino in",
+        "z": "b5a32178.96e11",
+        "name": "PBS (Pin 3)",
+        "pin": "3",
+        "state": "INPUT",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 130,
+        "y": 460,
+        "wires": [
+            [
+                "5214b8f7.bfe088"
+            ]
+        ]
+    },
+    {
+        "id": "6c486111.55a01",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "append scale and timestramp",
+        "func": "if ( typeof msg.req.query.scale === 'undefined' || msg.req.query.scale == 'c') {\n    msg.payload.scale = \"Celsius\";\n} \n\nelse if (msg.req.query.scale == 'f') {\n    msg.payload.scale = \"Fahrenheit\";\n} \n\nelse if (msg.req.query.scale == \"k\") {\n    msg.payload.scale = \"Kelvin\";\n} \n\nelse {\n    msg.payload.scale = \"Unknown query param \";\n}\n\nmsg.payload.timestamp = new Date().toString();\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1000,
+        "y": 840,
+        "wires": [
+            [
+                "4be5a50a.70657c",
+                "dde04a79.f822e8"
+            ]
+        ]
+    },
+    {
+        "id": "4be5a50a.70657c",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "set HTTP Header to JSON",
+        "func": "// If sending JSON data the content type is:\nmsg.headers={\"Context-Type\":\"application/json\"}\n\n// For HTML use the content type line below:\n//msg.headers={\"Context-Type\":\"application/html\"}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1280,
+        "y": 840,
+        "wires": [
+            [
+                "18d5f897.e5c5f7"
+            ]
+        ]
+    },
+    {
+        "id": "18d5f897.e5c5f7",
+        "type": "http response",
+        "z": "b5a32178.96e11",
+        "name": "Http Response",
+        "statusCode": "",
+        "headers": {},
+        "x": 1300,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "dde04a79.f822e8",
+        "type": "debug",
+        "z": "b5a32178.96e11",
+        "name": "JSONata",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "cc74a193.6083a",
+        "type": "function",
+        "z": "b5a32178.96e11",
+        "name": "cache scale",
+        "func": "var tem = \"c\";\n\nif(msg.payload == 1){\n    tem = \"c\";\n    \n}\n    \nif(msg.payload == 2){\n    tem = \"f\";\n    \n}\n    \nif(msg.payload == 3){\n    tem = \"k\"\n    \n}\n    \nflow.set(\"scale\", tem);\nmsg.payload = tem;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 850,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bb9ece7a.acad4",
+        "type": "switch",
+        "z": "b5a32178.96e11",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "c",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "f",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "k",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 1010,
+        "y": 640,
+        "wires": [
+            [
+                "c48cdcd6.0d73a"
+            ],
+            [
+                "cf6594c4.aeb338"
+            ],
+            [
+                "c04c56ce.3ebaf8"
+            ]
+        ]
+    },
+    {
+        "id": "c48cdcd6.0d73a",
+        "type": "change",
+        "z": "b5a32178.96e11",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "req.query.scale",
+                "pt": "msg",
+                "to": "c",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1250,
+        "y": 600,
+        "wires": [
+            [
+                "9743900c.55979"
+            ]
+        ]
+    },
+    {
+        "id": "cf6594c4.aeb338",
+        "type": "change",
+        "z": "b5a32178.96e11",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "req.query.scale",
+                "pt": "msg",
+                "to": "f",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1250,
+        "y": 640,
+        "wires": [
+            [
+                "c15120c1.16471"
+            ]
+        ]
+    },
+    {
+        "id": "c04c56ce.3ebaf8",
+        "type": "change",
+        "z": "b5a32178.96e11",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "req.query.scale",
+                "pt": "msg",
+                "to": "k",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1250,
+        "y": 680,
+        "wires": [
+            [
+                "22a462ea.4b4dce"
+            ]
+        ]
+    },
+    {
+        "id": "79ca2807.e579d8",
+        "type": "http in",
+        "z": "b5a32178.96e11",
+        "name": "Http GET /temperature/now",
+        "url": "/temperature/now",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "49e3f017.f4fe4",
+        "x": 160,
+        "y": 640,
+        "wires": [
+            [
+                "a4cc98a5.53caa8"
+            ]
+        ]
+    },
+    {
+        "id": "d76c517e.7406f",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "// Readme: http://cookbook.nodered.org/http/handle-query-parameters",
+        "info": "",
+        "x": 270,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "cdfafb51.a46578",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "GET end point: /temperature/now?scale=c,f,k",
+        "info": "",
+        "x": 190,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "b4d4b5c2.bf3508",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "Genrated Swagger: http://localhost:1880/http-api/swagger.json",
+        "info": "",
+        "x": 280,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "ead63214.bbb16",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "//Debug; temperature object",
+        "info": "",
+        "x": 1020,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "3da69307.04edac",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "Cycle  C > F > K ... on each push of the button switch [scale]",
+        "info": "",
+        "x": 280,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "bda3d8fb.738338",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "Temperature Circuit: htt://www.pjrc.com/teensy/tutorial4.html",
+        "info": "",
+        "x": 280,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "e99f7d53.58dc1",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "Pre-Req: Teensy is running Standard Firmata Plus",
+        "info": "",
+        "x": 250,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "c71f3c16.bba23",
+        "type": "comment",
+        "z": "b5a32178.96e11",
+        "name": "Read thermistor, to convert Celsius and cache temperature (C)",
+        "info": "",
+        "x": 280,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "b4543f4.a6ae6c",
+        "type": "arduino-board",
+        "device": "COM3"
+    },
+    {
+        "id": "49e3f017.f4fe4",
+        "type": "swagger-doc",
+        "summary": "Get the current temperature",
+        "description": "Get the current temperature, Supported temperature scales: Celsius(default) Fahrenheit, Kelvin Format of timestamp: dMon DD YYYY HH:MM:SS TZ",
+        "tags": "RESTful API for Temperature",
+        "consumes": "",
+        "produces": "",
+        "parameters": [
+            {
+                "name": "scale",
+                "in": "query",
+                "description": "Temperature Identifier",
+                "required": false,
+                "type": "string"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "The request was accepted",
+                "schema": {
+                    "properties": {
+                        "temperature": {
+                            "type": "number"
+                        },
+                        "scale": {
+                            "type": "string"
+                        },
+                        "timestamp": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "deprecated": false
+    }
+]

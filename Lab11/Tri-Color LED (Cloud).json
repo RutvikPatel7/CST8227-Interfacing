@@ -1,0 +1,538 @@
+[
+    {
+        "id": "824330ed.dca4b",
+        "type": "tab",
+        "label": "Tri-Color LED (Cloud)",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "f0b10593.92b8d8",
+        "type": "mqtt in",
+        "z": "824330ed.dca4b",
+        "name": "From MQTT Server (Cayenne): Channel 1",
+        "topic": "v1/78eedf50-35dc-11eb-b767-3f1a8f1211ba/things/7b140c70-35e0-11eb-883c-638d8ce4c23d/cmd/1",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "795c7f9d.8efa8",
+        "x": 180,
+        "y": 260,
+        "wires": [
+            [
+                "dde99e0b.cee98"
+            ]
+        ]
+    },
+    {
+        "id": "dde99e0b.cee98",
+        "type": "split",
+        "z": "824330ed.dca4b",
+        "name": "split using: ,",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 450,
+        "y": 260,
+        "wires": [
+            [
+                "f0606c11.2272"
+            ]
+        ]
+    },
+    {
+        "id": "aca5d911.08fbb8",
+        "type": "debug",
+        "z": "824330ed.dca4b",
+        "name": "DEBUG",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "58deed56.08a614",
+        "type": "comment",
+        "z": "824330ed.dca4b",
+        "name": "Tri-Color LED (Cloud) by Rutvik Patel (pate0635@algonquinlive.com)",
+        "info": "",
+        "x": 260,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "be951781.9d0ef8",
+        "type": "arduino out",
+        "z": "824330ed.dca4b",
+        "name": "RED (Pin:22)",
+        "pin": "22",
+        "state": "PWM",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 1310,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "c71cf2a1.9a11c",
+        "type": "arduino out",
+        "z": "824330ed.dca4b",
+        "name": "Green (Pin: 20)",
+        "pin": "20",
+        "state": "PWM",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 1320,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "b217f797.8a4488",
+        "type": "arduino out",
+        "z": "824330ed.dca4b",
+        "name": "Blue (Pin 21)",
+        "pin": "21",
+        "state": "PWM",
+        "arduino": "b4543f4.a6ae6c",
+        "x": 1310,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "60d8f531.79914c",
+        "type": "function",
+        "z": "824330ed.dca4b",
+        "name": "Fade RED",
+        "func": "let valueRed = flow.get('Red') || 0;\nlet dimmer = flow.get(\"dimmer\")||0;\n\nmsg.payload = parseInt(Number(valueRed) * (dimmer / 100));\n\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1070,
+        "y": 260,
+        "wires": [
+            [
+                "be951781.9d0ef8"
+            ]
+        ]
+    },
+    {
+        "id": "8546e0c3.333fd",
+        "type": "function",
+        "z": "824330ed.dca4b",
+        "name": "Fade GREEN",
+        "func": "let valueGreen = flow.get('Green') || 0;\n\nlet dimmer = flow.get(\"dimmer\")||0;\n\nmsg.payload = parseInt(Number(valueGreen) * (dimmer / 100));\n\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1080,
+        "y": 340,
+        "wires": [
+            [
+                "c71cf2a1.9a11c"
+            ]
+        ]
+    },
+    {
+        "id": "d8554a7b.be0578",
+        "type": "function",
+        "z": "824330ed.dca4b",
+        "name": "Fade BLUE",
+        "func": "let valueBlue = flow.get('Blue') || 0;\n\nlet dimmer = flow.get(\"dimmer\")||0;\n\nmsg.payload = parseInt(Number(valueBlue) * (dimmer / 100));\n\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 1070,
+        "y": 540,
+        "wires": [
+            [
+                "b217f797.8a4488"
+            ]
+        ]
+    },
+    {
+        "id": "398782c9.ee860e",
+        "type": "function",
+        "z": "824330ed.dca4b",
+        "name": "cache DIMMER",
+        "func": "flow.set(\"dimmer\",msg.payload );\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 900,
+        "y": 620,
+        "wires": [
+            [
+                "60d8f531.79914c",
+                "8546e0c3.333fd",
+                "d8554a7b.be0578"
+            ]
+        ]
+    },
+    {
+        "id": "3301c147.bf208e",
+        "type": "mqtt in",
+        "z": "824330ed.dca4b",
+        "name": "From MQTT Server (Cayenne): Channel 2",
+        "topic": "v1/78eedf50-35dc-11eb-b767-3f1a8f1211ba/things/7b140c70-35e0-11eb-883c-638d8ce4c23d/cmd/2",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "795c7f9d.8efa8",
+        "x": 180,
+        "y": 340,
+        "wires": [
+            [
+                "69979d5.f6f9c64"
+            ]
+        ]
+    },
+    {
+        "id": "69979d5.f6f9c64",
+        "type": "split",
+        "z": "824330ed.dca4b",
+        "name": "split using: ,",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 450,
+        "y": 340,
+        "wires": [
+            [
+                "152808ba.ef2f17"
+            ]
+        ]
+    },
+    {
+        "id": "e356f5b2.c44ff8",
+        "type": "mqtt in",
+        "z": "824330ed.dca4b",
+        "name": "From MQTT Server (Cayenne): Channel 3",
+        "topic": "v1/78eedf50-35dc-11eb-b767-3f1a8f1211ba/things/7b140c70-35e0-11eb-883c-638d8ce4c23d/cmd/3",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "795c7f9d.8efa8",
+        "x": 180,
+        "y": 540,
+        "wires": [
+            [
+                "829caabb.2a48d8"
+            ]
+        ]
+    },
+    {
+        "id": "829caabb.2a48d8",
+        "type": "split",
+        "z": "824330ed.dca4b",
+        "name": "split using: ,",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 450,
+        "y": 540,
+        "wires": [
+            [
+                "75601720.daa238"
+            ]
+        ]
+    },
+    {
+        "id": "40f2e843.301c28",
+        "type": "mqtt in",
+        "z": "824330ed.dca4b",
+        "name": "From MQTT Server (Cayenne): Channel 4",
+        "topic": "v1/78eedf50-35dc-11eb-b767-3f1a8f1211ba/things/7b140c70-35e0-11eb-883c-638d8ce4c23d/cmd/4",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "795c7f9d.8efa8",
+        "x": 180,
+        "y": 620,
+        "wires": [
+            [
+                "f38e7c63.cd30f"
+            ]
+        ]
+    },
+    {
+        "id": "f38e7c63.cd30f",
+        "type": "split",
+        "z": "824330ed.dca4b",
+        "name": "split using: ,",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 450,
+        "y": 620,
+        "wires": [
+            [
+                "fd226f3a.d75ec"
+            ]
+        ]
+    },
+    {
+        "id": "a1f4e02b.48f93",
+        "type": "function",
+        "z": "824330ed.dca4b",
+        "name": "RED",
+        "func": "flow.set('Red', msg.payload);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 870,
+        "y": 260,
+        "wires": [
+            [
+                "60d8f531.79914c"
+            ]
+        ]
+    },
+    {
+        "id": "a202a485.4f09f8",
+        "type": "function",
+        "z": "824330ed.dca4b",
+        "name": "GREEN",
+        "func": "flow.set('Green', msg.payload);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 880,
+        "y": 340,
+        "wires": [
+            [
+                "8546e0c3.333fd"
+            ]
+        ]
+    },
+    {
+        "id": "641a490f.c84318",
+        "type": "function",
+        "z": "824330ed.dca4b",
+        "name": "BLUE",
+        "func": "flow.set('Blue', msg.payload);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 870,
+        "y": 540,
+        "wires": [
+            [
+                "d8554a7b.be0578"
+            ]
+        ]
+    },
+    {
+        "id": "f0606c11.2272",
+        "type": "switch",
+        "z": "824330ed.dca4b",
+        "name": "String Converter",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "regex",
+                "v": "^[0-9]+$",
+                "vt": "str",
+                "case": false
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 680,
+        "y": 260,
+        "wires": [
+            [
+                "a1f4e02b.48f93",
+                "aca5d911.08fbb8"
+            ]
+        ]
+    },
+    {
+        "id": "152808ba.ef2f17",
+        "type": "switch",
+        "z": "824330ed.dca4b",
+        "name": "String Converter",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "regex",
+                "v": "^[0-9]+$",
+                "vt": "str",
+                "case": false
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 680,
+        "y": 340,
+        "wires": [
+            [
+                "a202a485.4f09f8",
+                "aca5d911.08fbb8"
+            ]
+        ]
+    },
+    {
+        "id": "75601720.daa238",
+        "type": "switch",
+        "z": "824330ed.dca4b",
+        "name": "String Converter",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "regex",
+                "v": "^[0-9]+$",
+                "vt": "str",
+                "case": false
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 680,
+        "y": 540,
+        "wires": [
+            [
+                "641a490f.c84318",
+                "aca5d911.08fbb8"
+            ]
+        ]
+    },
+    {
+        "id": "fd226f3a.d75ec",
+        "type": "switch",
+        "z": "824330ed.dca4b",
+        "name": "String Converter",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "regex",
+                "v": "^[0-9]+$",
+                "vt": "str",
+                "case": false
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 680,
+        "y": 620,
+        "wires": [
+            [
+                "398782c9.ee860e",
+                "aca5d911.08fbb8"
+            ]
+        ]
+    },
+    {
+        "id": "8569d078.33ef8",
+        "type": "comment",
+        "z": "824330ed.dca4b",
+        "name": "Split input value",
+        "info": "",
+        "x": 440,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "6b2c04bd.0ad55c",
+        "type": "comment",
+        "z": "824330ed.dca4b",
+        "name": " Regular expressions ",
+        "info": "",
+        "x": 690,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "2bf72578.3934ea",
+        "type": "comment",
+        "z": "824330ed.dca4b",
+        "name": "Get Input from Cayenne (Cloud)",
+        "info": "",
+        "x": 150,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "75635041.2c1f5",
+        "type": "comment",
+        "z": "824330ed.dca4b",
+        "name": "Debug",
+        "info": "",
+        "x": 930,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "99198839.5d1408",
+        "type": "comment",
+        "z": "824330ed.dca4b",
+        "name": "Analogue Pin",
+        "info": "",
+        "x": 1310,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "aa157fa.b05eb8",
+        "type": "comment",
+        "z": "824330ed.dca4b",
+        "name": "MQTT Node",
+        "info": "",
+        "x": 90,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "795c7f9d.8efa8",
+        "type": "mqtt-broker",
+        "name": "mqtt.mydevices.com",
+        "broker": "mqtt.mydevices.com",
+        "port": "1883",
+        "clientid": "7b140c70-35e0-11eb-883c-638d8ce4c23d",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "b4543f4.a6ae6c",
+        "type": "arduino-board",
+        "device": "COM3"
+    }
+]
